@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "carrinho",
+  "description": "Carrinho de compras. Coleção separada de `pedidos` por ter ciclo de escrita muito mais frequente e ser efêmera (vira pedido ou expira). Índice TTL em `atualizado_em` apaga carrinhos abandonados após 30 dias automaticamente.",
+  "bsonType": "object",
+  "required": ["_id", "cliente_id", "itens"],
+  "properties": {
+    "_id": { "bsonType": "objectId", "description": "Chave primária" },
+    "cliente_id": {
+      "bsonType": "objectId",
+      "description": "REFERÊNCIA para clientes._id, índice único (1 carrinho ativo por cliente). Candidato a chave de shard (hashed) se a coleção crescer muito"
+    },
+    "itens": {
+      "bsonType": "array",
+      "description": "EMBUTIDO, pelo mesmo motivo de pedidos.itens (lido/escrito sempre em conjunto) — mas com MENOS campos: sem `sku` nem `subtotal`, que só existem em pedidos.itens (registro fiscal fechado, não faz sentido pré-calcular subtotal de um carrinho que ainda muda a cada clique)",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "produto_id": { "bsonType": "objectId" },
+          "nome_produto": { "bsonType": "string" },
+          "preco_unitario": { "bsonType": "double" },
+          "quantidade": { "bsonType": "number", "description": "Gravado como número simples (não NumberInt) no seed" }
+        }
+      }
+    },
+    "criado_em": { "bsonType": "date" },
+    "atualizado_em": {
+      "bsonType": "date",
+      "description": "Campo do índice TTL — expira 60*60*24*30 segundos (30 dias) após esta data"
+    }
+  }
+}

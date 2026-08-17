@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "pedidos",
+  "description": "Pedidos do e-commerce. `itens[]` EMBUTIDO (sempre lido junto, tamanho limitado). `cliente_snapshot`, `endereco_entrega` e `forma_pagamento` são SNAPSHOTS — cópias do dado no momento da compra, para o pedido não mudar se o cliente editar o cadastro depois. `cliente_id` é REFERÊNCIA (permite 'todos os pedidos do cliente X'). SHARD KEY proposta: cliente_id (hashed) — ver 01-guia-de-estudos/README.md Módulo 3.3.",
+  "bsonType": "object",
+  "required": ["_id", "numero_pedido", "cliente_id", "itens", "status", "data_pedido"],
+  "properties": {
+    "_id": { "bsonType": "objectId", "description": "Chave primária" },
+    "numero_pedido": { "bsonType": "string", "description": "Chave de negócio, índice único composto com cliente_id" },
+    "cliente_id": {
+      "bsonType": "objectId",
+      "description": "REFERÊNCIA para clientes._id. Também é a CHAVE DE SHARD (hashed)"
+    },
+    "cliente_snapshot": {
+      "bsonType": "object",
+      "description": "SNAPSHOT do cliente no momento da compra",
+      "properties": {
+        "nome": { "bsonType": "string" },
+        "email": { "bsonType": "string" }
+      }
+    },
+    "itens": {
+      "bsonType": "array",
+      "description": "EMBUTIDO",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "produto_id": { "bsonType": "objectId", "description": "Referência para produtos._id" },
+          "sku": { "bsonType": "string" },
+          "nome_produto": { "bsonType": "string" },
+          "preco_unitario": { "bsonType": "double" },
+          "quantidade": { "bsonType": "number", "description": "Gravado como número simples (não NumberInt) no seed" },
+          "subtotal": { "bsonType": "double" }
+        }
+      }
+    },
+    "endereco_entrega": {
+      "bsonType": "object",
+      "description": "SNAPSHOT do endereço escolhido no momento da compra"
+    },
+    "forma_pagamento": {
+      "bsonType": "object",
+      "description": "SNAPSHOT — não referencia formas_pagamento diretamente"
+    },
+    "status": { "bsonType": "string", "description": "criado | pago | enviado | entregue | cancelado. Índice próprio" },
+    "historico_status": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "status": { "bsonType": "string" },
+          "data": { "bsonType": "date" }
+        }
+      }
+    },
+    "valor_frete": { "bsonType": "double" },
+    "valor_desconto": { "bsonType": "double" },
+    "valor_total": { "bsonType": "double" },
+    "data_pedido": { "bsonType": "date", "description": "Índice composto com cliente_id, ordem decrescente" }
+  }
+}

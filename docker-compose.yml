@@ -1,0 +1,79 @@
+name: amazonas-ecommerce
+
+# ------------------------------------------------------------------------
+# Ambiente Docker para o Desafio Final (Arquiteto(a) de Dados) - Loja Amazonas
+#
+# Sobe um Replica Set MongoDB com 1 nó primário + 2 secundários, simulando
+# a estratégia de REPLICAÇÃO descrita no Documento Arquitetural (alta
+# disponibilidade / leitura distribuída).
+#
+# Sharding NÃO é implementado neste compose (ver README.md - seção
+# "Por que só réplica e não sharding?"), mas a estratégia de particionamento
+# está descrita no documento e nos comentários do seed-data.js.
+# ------------------------------------------------------------------------
+
+# Configuração comum aos 3 nós do replica set (âncora YAML) — evita manter
+# image/restart/command/healthcheck sincronizados manualmente em 3 lugares.
+x-mongo-node: &mongo-node
+  image: mongo:7.0
+  restart: unless-stopped
+  command: ["--replSet", "rsAmazonas", "--bind_ip_all", "--port", "27017"]
+  networks:
+    - amazonas-net
+  healthcheck:
+    test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+    interval: 5s
+    timeout: 5s
+    retries: 20
+
+services:
+  mongo1:
+    <<: *mongo-node
+    container_name: amazonas-mongo1
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo1_data:/data/db
+
+  mongo2:
+    <<: *mongo-node
+    container_name: amazonas-mongo2
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo2_data:/data/db
+
+  mongo3:
+    <<: *mongo-node
+    container_name: amazonas-mongo3
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo3_data:/data/db
+
+  # Serviço "one-shot": inicializa o replica set e popula as coleções de
+  # exemplo. Roda uma vez e encerra (não faz parte do cluster de dados).
+  mongo-setup:
+    image: mongo:7.0
+    container_name: amazonas-mongo-setup
+    depends_on:
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
+    volumes:
+      - ./mongo-init:/scripts:ro
+    networks:
+      - amazonas-net
+    entrypoint: ["bash", "/scripts/00-entrypoint.sh"]
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:
+
+networks:
+  amazonas-net:
+    driver: bridge

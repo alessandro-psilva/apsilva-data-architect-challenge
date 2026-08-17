@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "clientes",
+  "description": "Cadastro de clientes da Amazonas. Endereços EMBUTIDOS: array pequeno, sempre lido junto do cliente. Histórico de pedidos NÃO fica aqui (cresce sem limite) — vira referência em `pedidos.cliente_id`.",
+  "bsonType": "object",
+  "required": ["_id", "nome", "email", "cpf", "data_cadastro"],
+  "properties": {
+    "_id": { "bsonType": "objectId", "description": "Chave primária" },
+    "nome": { "bsonType": "string" },
+    "email": { "bsonType": "string", "description": "Índice único" },
+    "cpf": { "bsonType": "string", "description": "Índice único" },
+    "telefone": { "bsonType": "string" },
+    "data_cadastro": { "bsonType": "date" },
+    "enderecos": {
+      "bsonType": "array",
+      "description": "EMBUTIDO (padrão de embedding): tamanho limitado, sempre consultado junto do cliente",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "apelido": { "bsonType": "string" },
+          "logradouro": { "bsonType": "string" },
+          "bairro": { "bsonType": "string" },
+          "cidade": { "bsonType": "string" },
+          "estado": { "bsonType": "string" },
+          "cep": { "bsonType": "string" },
+          "principal": { "bsonType": "bool" }
+        }
+      }
+    },
+    "preferencias": {
+      "bsonType": "object",
+      "properties": {
+        "newsletter": { "bsonType": "bool" },
+        "categorias_favoritas": {
+          "bsonType": "array",
+          "items": { "bsonType": "string" }
+        }
+      }
+    }
+  }
+}

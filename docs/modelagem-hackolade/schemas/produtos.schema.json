@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "produtos",
+  "description": "Catálogo de produtos. `atributos` é de esquema FLEXÍVEL: cada categoria tem campos diferentes (eletrônicos: voltagem/garantia; roupas: tamanho/cor; livros: autor/isbn) — clássico caso de uso schema-less do NoSQL. `avaliacao_media`/`total_avaliacoes` são contadores DESNORMALIZADOS, recalculados a partir de `avaliacoes` para evitar agregação em tempo real na tela do produto.",
+  "bsonType": "object",
+  "required": ["_id", "sku", "nome", "categoria", "preco"],
+  "properties": {
+    "_id": { "bsonType": "objectId", "description": "Chave primária" },
+    "sku": { "bsonType": "string", "description": "Identificador de negócio, índice único" },
+    "nome": { "bsonType": "string" },
+    "categoria": { "bsonType": "string", "description": "Índice composto com `ativo`" },
+    "subcategoria": { "bsonType": "string" },
+    "descricao": { "bsonType": "string", "description": "Índice de texto junto com `nome`" },
+    "preco": { "bsonType": "double" },
+    "moeda": { "bsonType": "string" },
+    "estoque": {
+      "bsonType": "object",
+      "properties": {
+        "quantidade": { "bsonType": "number", "description": "Gravado como número simples (não NumberInt) no seed — 'number' cobre double/int/long" },
+        "deposito": { "bsonType": "string" }
+      }
+    },
+    "atributos": {
+      "bsonType": "object",
+      "description": "Schema FLEXÍVEL por categoria — não tem um formato fixo de propósito",
+      "properties": {}
+    },
+    "imagens": {
+      "bsonType": "array",
+      "items": { "bsonType": "string" }
+    },
+    "avaliacao_media": { "bsonType": "double", "description": "Contador desnormalizado" },
+    "total_avaliacoes": { "bsonType": "number", "description": "Contador desnormalizado (gravado como número simples, não NumberInt)" },
+    "ativo": { "bsonType": "bool" },
+    "criado_em": { "bsonType": "date" }
+  }
+}

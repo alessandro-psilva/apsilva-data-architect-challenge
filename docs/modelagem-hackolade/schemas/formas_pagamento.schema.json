@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "formas_pagamento",
+  "description": "Meios de pagamento salvos pelo cliente. Coleção própria (não embutida em `clientes`) por ter ciclo de vida independente. NUNCA guarda número completo de cartão — só token do gateway + últimos 4 dígitos (compliance PCI-DSS).",
+  "bsonType": "object",
+  "required": ["_id", "cliente_id", "tipo"],
+  "properties": {
+    "_id": { "bsonType": "objectId", "description": "Chave primária" },
+    "cliente_id": {
+      "bsonType": "objectId",
+      "description": "REFERÊNCIA para clientes._id. Índice não-único (um cliente pode ter várias formas de pagamento)"
+    },
+    "tipo": { "bsonType": "string", "description": "ex.: cartao_credito, pix" },
+    "bandeira": { "bsonType": "string" },
+    "ultimos_digitos": { "bsonType": "string" },
+    "token_gateway": { "bsonType": "string", "description": "Nunca o número completo do cartão" },
+    "chave_pix_hash": { "bsonType": "string" },
+    "validade": { "bsonType": "string" },
+    "padrao": { "bsonType": "bool" },
+    "criado_em": { "bsonType": "date" }
+  }
+}
