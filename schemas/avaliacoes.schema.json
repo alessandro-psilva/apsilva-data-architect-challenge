@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "avaliacoes",
-  "description": "Avaliações de produtos. Referencia `produto_id` (consultas 'todas as avaliações do produto X') e `cliente_id` (auditoria), mas guarda `cliente_nome` como SNAPSHOT para renderizar a lista sem join na tela de produto. SHARD KEY proposta: produto_id (hashed) — ver 01-guia-de-estudos/README.md Módulo 3.3 para a limitação conhecida (hot key em produto viral).",
+  "description": "Avaliações de produtos. Referencia `produto_id` (consultas 'todas as avaliações do produto X') e `cliente_id` (auditoria), mas guarda `cliente_nome` como SNAPSHOT para renderizar a lista sem join na tela de produto. SHARD KEY proposta: produto_id (hashed) — ver seção 3.3 do Documento Arquitetural para a limitação conhecida (hot key em produto viral).",
   "bsonType": "object",
   "required": ["_id", "produto_id", "cliente_id", "nota", "data"],
   "properties": {
