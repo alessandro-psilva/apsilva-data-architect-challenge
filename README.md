@@ -43,10 +43,10 @@ decisão está no Documento Arquitetural.
 
 ## Documento Arquitetural
 
-O entregável principal é [`docs/documento-arquitetural.md`](docs/documento-arquitetural.md):
+O entregável principal é [`docs/EVIDENCIAS.md`](docs/EVIDENCIAS.md):
 descrição do sistema, as 6 coleções detalhadas com o diagrama modelado no Hackolade, o plano de
-escalabilidade (o que particiona, o que replica, crescimento de dados, concorrência) e uma visão de
-implementação em Atlas/DynamoDB.
+escalabilidade (o que particiona, o que replica, crescimento de dados, concorrência), uma visão de
+implementação em Atlas/DynamoDB e as evidências da implementação opcional.
 
 ## Estrutura do repositório
 
@@ -58,8 +58,7 @@ apsilva-data-architect-challenge/
 ├── mongo-init/                       ← scripts que inicializam o replica set e populam os dados
 ├── schemas/                          ← JSON Schema das 6 coleções (usado para modelar no Hackolade)
 └── docs/
-    ├── documento-arquitetural.md     ← entregável principal
-    ├── EVIDENCIAS.md                 ← evidências da implementação opcional
+    ├── EVIDENCIAS.md                 ← entregável principal + evidências
     ├── screenshots/                  ← diagrama do Hackolade e prints do MongoDB
     └── implementacao-docker-mongodb.md
 ```

@@ -102,7 +102,7 @@ Para demonstrar particionamento de verdade:
 4. Rodar `sh.enableSharding("amazonas_ecommerce")` e
    `sh.shardCollection("amazonas_ecommerce.pedidos", { cliente_id: "hashed" })` — não
    `{ cliente_id: 1 }` (chave em range), que reintroduziria o hotspot de escrita que o sharding deveria
-   evitar (ver seção 3.3 do [Documento Arquitetural](documento-arquitetural.md#33-o-que-particiona-sharding-e-por-quê)).
+   evitar (ver seção 3.3 do [Documento Arquitetural](EVIDENCIAS.md#33-o-que-particiona-sharding-e-por-quê)).
 
 Isso é significativamente mais pesado para rodar localmente (7+ containers) e não é exigido pelo
 enunciado — a explicação textual da estratégia de sharding no Documento Arquitetural já atende ao
